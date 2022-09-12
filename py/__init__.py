@@ -294,6 +294,7 @@ async def handle_chess(request_iterator: RequestIterator) -> ResponseIterator:
                 else:
                     game.player_red = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
                 ai = True
+                break
 
     else:
         while True:

@@ -2,4 +2,4 @@
 __pycache__
 .idea/
 py/resources/engine/*
-!py/resources/engine/readme.txt
+!py/resources/engine/readme.md

@@ -1,5 +1,0 @@
-如果是windows系统，去
-https://github.com/ianfab/Fairy-Stockfish/releases/download/fairy_sf_14_0_1_xq/fairy-stockfish-largeboard_x86-64.exe
-下载，下载完成后命名为model.exe，放在egine目录下
-
-如果是linux系统，请自己找一个UCCI引擎，目前我还没有找到比较方便的安装方式
