@@ -289,25 +289,31 @@ async def handle_chess(request_iterator: RequestIterator) -> ResponseIterator:
                 break
 
             if re.search('^AI[1-8]$', request.message.upper()):
-                if first_selected == "red":
-                    game.player_black = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
-                else:
-                    game.player_red = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
-                ai = True
-                break
+                try:
+                    if first_selected == "red":
+                        game.player_black = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
+                    else:
+                        game.player_red = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
+                    ai = True
+                except Exception as e:
+                    yield Response(str(e))
+                    return
     else:
         while True:
             yield Response("请选请输入AI+等级(1-8)，如AI4")
 
             request = await request_iterator.__anext__()
             if re.search('^AI[1-8]$', request.message.upper()):
-                if first_selected == "red":
-                    game.player_black = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
-                else:
-                    game.player_red = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
-                ai = True
-                break
-
+                try:
+                    if first_selected == "red":
+                        game.player_black = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
+                    else:
+                        game.player_red = second_player = AiPlayer(int(request.message.upper().replace("AI", "")))
+                    ai = True
+                    break
+                except Exception as e:
+                    yield Response(str(e))
+                    return
     if ai:
         await second_player.engine.open()
         msg = f"{first_player}与AI(等级{second_player.level}) 发起了游戏 象棋！\n发送 中文纵线格式如“炮二平五” 或 起始坐标格式如“h2e2” 下棋"
