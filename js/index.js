@@ -153,7 +153,14 @@ export async function chinese_chess_listener(e) {
         });
         current.participant.rival = Number(event.atList[0].qq);
       } else if (msg === "悔棋") {
-        e.reply("人人对战不允许悔棋");
+        if(current.participant.rival==="ai"){
+          current["call"].send({
+          event: await createEvent(e),
+          message: msg,
+        });
+        }else {
+          e.reply("人人对战不允许悔棋");
+        }
       }
     }
   } else if (!e.isGroup && private_call[e.sender.user_id]) {
