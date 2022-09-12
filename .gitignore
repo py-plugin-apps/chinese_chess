@@ -1,3 +1,5 @@
 *.pyc
 __pycache__
 .idea/
+py/resources/engine/*
+!py/resources/engine/readme.txt
