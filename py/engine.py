@@ -16,7 +16,7 @@ class UCCIEngine:
 
     async def open(self):
         if not self.engine_path.exists():
-            raise FileNotFoundError("找不到UCCI引擎！")
+            raise FileNotFoundError("找不到UCCI引擎！,请查看py/resources/engine/readme安装ai引擎")
         self._process = await asyncio.create_subprocess_exec(
             str(self.engine_path),
             stdin=asyncio.subprocess.PIPE,
