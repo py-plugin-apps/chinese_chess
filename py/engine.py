@@ -1,9 +1,12 @@
 import re
 import asyncio
+import uuid
 from pathlib import Path
 from typing import List
-
+from nonebot import logger
 from .move import Move
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from datetime import datetime, timedelta, timezone
 
 
 class EngineError(Exception):
@@ -11,8 +14,15 @@ class EngineError(Exception):
 
 
 class UCCIEngine:
+    scheduler = AsyncIOScheduler()
+    scheduler.start()
+
     def __init__(self, engine_path: Path):
+        pid = str(uuid.uuid4())
+        self.pid = pid
+        self.scheduler.add_job(self.close, 'date', run_date=datetime.now(timezone.utc) + timedelta(minutes=6), id=pid)
         self.engine_path = engine_path
+        self.closed = False
 
     async def open(self):
         if not self.engine_path.exists():
@@ -28,8 +38,11 @@ class UCCIEngine:
         await self.start()
 
     def close(self):
-        self.stop()
-        self._process.kill()
+        if not self.closed:
+            self.stop()
+            self._process.kill()
+            self.closed = True
+            logger.info("chinese chess ai engine closed")
 
     def send_line(self, line: str):
         assert self.stdin is not None
@@ -65,6 +78,9 @@ class UCCIEngine:
         * `time`: 限定搜索时间，单位为毫秒
         * `depth`: 限定搜索深度
         """
+        self.scheduler.remove_job(self.pid)
+        self.scheduler.add_job(self.close, "date", run_date=datetime.now(timezone.utc) + timedelta(minutes=6),
+                               id=self.pid)
         self.send_line(position)
         self.send_line(f"go time {time} depth {depth}")
         lines = await self.read_lines("bestmove")
